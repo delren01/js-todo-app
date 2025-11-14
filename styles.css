@@ -1,0 +1,131 @@
+* {
+    box-sizing: border-box;
+    padding: 0;
+    font-family: "Amiko", "Verdana", sans-serif;
+    background-color: #F3F4F6;
+}
+
+h1 {
+    border-bottom: 1.9px solid gray;
+}
+
+h1, h2 {
+    text-align: center;
+    line-height: 1.3;
+}
+
+
+ul {
+    text-align: center;
+}
+
+li {
+    background-color: #CFD4D9;
+    border: 1px solid gray;
+    border-radius: 5px;
+    margin: 1rem;
+    padding: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: blue;
+    font-weight: bold;
+}
+
+.spacing {
+    padding: 1rem;
+    margin-bottom: 0;
+}
+
+.btn-grp {
+    display: flex;
+    gap: .50rem;
+    padding: .20rem;
+}
+
+.btn-grp, .task-text {
+    background-color: #CFD4D9;
+}
+
+.delete-btn, .complete-btn, .edit-btn {
+    border-radius: 10px;
+    padding: .30rem;
+    margin: .10rem;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.delete-btn {
+    background-color: #FF8A9D;
+}
+
+.delete-btn:hover {
+    background-color: #FF2E51;
+}
+
+.complete-btn {
+    background-color: #8AFF8A;
+}
+
+.complete-btn:hover {
+    background-color: #00D100;
+}
+
+.edit-btn {
+    background-color: #92C1D0;
+}
+
+.edit-btn:hover {
+    background-color: #8A8AFF;
+}
+
+.completed {
+    text-decoration: line-through;
+    color: red;
+}
+
+#addTaskBtn {
+    border-radius: 5px;
+    padding: .20rem;
+    border: 2px solid black;
+    background-color: #98C0F1;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+#addTaskBtn:hover {
+    background-color: navy;
+    color: white;
+}
+
+#addTaskBtn:active {
+    color: beige;
+}
+
+.container {
+    max-inline-size: 85rem;
+    margin: 0 auto;
+}
+
+.addTaskContainer {
+   display: flex;
+   gap: .25rem;
+   justify-content: center;
+   align-items: center;
+}
+
+#taskInput {
+    border-radius: 5px;
+    border: 2px solid black;
+    padding: .20rem;
+}
+
+#myDialog {
+    padding: 1rem;
+    text-align: center;
+}
+
+#openDialogBtn {
+    display: none;
+}
+
