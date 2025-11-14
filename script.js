@@ -4,6 +4,8 @@ const ulEl = document.getElementById("taskList");
 const openDialog = document.getElementById("openDialogBtn");
 const closeDialog = document.getElementById("closeDialogBtn");
 const dialog = document.getElementById("myDialog");
+let completedCounter = document.querySelector(".completed-count");
+let incompleteCounter = document.querySelector(".incomplete-count");
 
 // Modal Controls
 closeDialog.addEventListener("click", () => {
@@ -55,21 +57,19 @@ function addTask() {
         buttonGroup.append(deleteButton); // Appends the delete button INSIDE the task item (next to it)
         // * Clears the input after adding the task.
         taskInput.value = '';
+        updateCounter();
     }
-}
+};
 
-// * Event Delegation (handles all Edit, Complete, Delete clicks);
-ulEl.addEventListener("click", (e) => {
-    // * DELETE button logic
-    if (e.target.classList.contains("delete-btn")) {
-        // Traverse from the bottom up to the <div class="btn-grp">
+function deleteTask(e) {
         let parentEl = e.target.parentElement;
         // From <div class="btn-grp">, it goes up to the <li> where our task text is.
         let taskToDelete = parentEl.parentElement;
         taskToDelete.remove();
-    }
-    // * COMPLETE button logic
-    if (e.target.classList.contains("complete-btn")) {
+        updateCounter();
+};
+
+function completeTask(e) {
         // Traverse from the bottom up to the <div class="btn-grp">
         let parentEl = e.target.parentElement;
         // Locates the target <span> el containing the text we need
@@ -77,37 +77,65 @@ ulEl.addEventListener("click", (e) => {
         let textEl = taskToStrike.querySelector(".task-text");
         // * Toggle the .completed class for strikethrough/red color change
         textEl.classList.toggle("completed");
-    }
-    // * EDIT button logic
-    if(e.target.classList.contains("edit-btn")) {
-        let parentEl = e.target.parentElement;
-        let taskToEdit = parentEl.parentElement;
-        // 1. Prepare a new input element
-        let newTextInput = document.createElement("input");
-        newTextInput.setAttribute("type", "text");
-        // 2. Retrieve old <span> and store its completion status
-        let taskEl =  taskToEdit.querySelectorAll('.task-text');
-        newTextInput.value = taskEl[0].textContent; // * Assign current text to the new input value
-        let hasCompleted = taskEl[0].classList.contains("completed");  // false: Store status before swap
-        // 3. Perform the swap: Replace <span> with the new <input> element
-        taskEl[0].replaceWith(newTextInput);
-        newTextInput.focus();
+        updateCounter();
+};
+
+function editTask(e) {
+    let parentEl = e.target.parentElement;
+    let taskToEdit = parentEl.parentElement;
+    // 1. Prepare a new input element
+    let newTextInput = document.createElement("input");
+    newTextInput.setAttribute("type", "text");
+    // 2. Retrieve old <span> and store its completion status
+    let taskEl =  taskToEdit.querySelectorAll('.task-text');
+    newTextInput.value = taskEl[0].textContent; // * Assign current text to the new input value
+    let hasCompleted = taskEl[0].classList.contains("completed");  // false: Store status before swap
+    // 3. Perform the swap: Replace <span> with the new <input> element
+    taskEl[0].replaceWith(newTextInput);
+    newTextInput.focus();
     
-        // 4. Implement saving logic (on keyup event for the new input)
-        newTextInput.addEventListener("keyup", (event) => {
-            if (event.key === "Enter") {
-                // a. Create the replacement <span>
-                let newSpanEl = document.createElement("span");
-                newSpanEl.classList.add("task-text") // Re-add mandatory class
-                newSpanEl.textContent = newTextInput.value;
-                // b. Preserve the 'completed' status using the stored boolean
-                if (hasCompleted) {
-                    newSpanEl.classList.add("completed");
-                }
-                // c. Final swap: Replace <input> with the new <span>
-                newTextInput.replaceWith(newSpanEl);
+    // 4. Implement saving logic (on keyup event for the new input)
+    newTextInput.addEventListener("keyup", (event) => {
+        if (event.key === "Enter") {
+            // a. Create the replacement <span>
+            let newSpanEl = document.createElement("span");
+            newSpanEl.classList.add("task-text") // Re-add mandatory class
+            newSpanEl.textContent = newTextInput.value;
+            // b. Preserve the 'completed' status using the stored boolean
+            if (hasCompleted) {
+                newSpanEl.classList.add("completed");
             }
-        })
+            // c. Final swap: Replace <input> with the new <span>
+            newTextInput.replaceWith(newSpanEl);
+        }
+    });
+    updateCounter();
+};
+
+function updateCounter() {
+    let completeTasks = 0;
+    let incompleteTasks = 0;
+    let allTaskList = document.querySelectorAll(".task-text");
+    allTaskList.forEach((task) => {
+        if (task.classList.contains("completed")) {
+            completeTasks += 1;
+        } else {
+            incompleteTasks += 1;
+        }
+    });
+    completedCounter.textContent = `${completeTasks}`;
+    incompleteCounter.textContent = `${incompleteTasks}`;
+};
+
+// * Event Delegation (handles all Edit, Complete, Delete clicks);
+ulEl.addEventListener("click", (e) => {
+    // * DELETE button logic
+    if (e.target.classList.contains("delete-btn")) {
+        deleteTask(e);
+    } else if (e.target.classList.contains("complete-btn")) { // * COMPLETE button logic
+        completeTask(e);
+    } else if (e.target.classList.contains("edit-btn")) { // * EDIT button logic
+        editTask(e);
     }
 });
 

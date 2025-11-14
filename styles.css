@@ -37,6 +37,18 @@ li {
     margin-bottom: 0;
 }
 
+.counter {
+    text-align: center;
+}
+
+.completed-count {
+    color: #48BB78;
+}
+
+.incomplete-count {
+    color: #F56565;
+}
+
 .btn-grp {
     display: flex;
     gap: .50rem;
