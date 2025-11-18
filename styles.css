@@ -1,28 +1,48 @@
+:root {
+    --color-primary: #2C7AC5; /* Soft Blue (for Add/Edit) */
+    --color-success: #2F855A; /* Green (for Complete) */
+    --color-delete: #C53030; /* Red (for Delete) */
+    --color-text-dark: #1A202C;
+    --color-background: #F0F4F8; /* Light Grayish-Blue App Background */
+    --color-card-bg: #FFFFFF; /* White Card Background */
+    --color-border: #E2E8F0;
+}
+
 * {
     box-sizing: border-box;
     padding: 0;
     font-family: "Amiko", "Verdana", sans-serif;
-    background-color: #F3F4F6;
+    background-color: var(--color-background);
+    color: var(--color-text-dark);
 }
 
 h1 {
-    border-bottom: 1.9px solid gray;
+    border-bottom: 1.9px solid var(--color-border);
+    padding-bottom: 0.5rem;
+    margin-bottom: 1rem;
+    color: var(--color-primary); 
 }
 
 h1, h2 {
     text-align: center;
     line-height: 1.3;
+    /* background-color: var(--color-card-bg); */
 }
 
+h2.spacing {
+    padding: 0.5rem 0;
+    margin-bottom: 0;
+}
 
 ul {
     text-align: center;
+    padding: 0;
 }
 
 li {
-    background-color: #CFD4D9;
-    border: 1px solid gray;
-    border-radius: 5px;
+    background-color: var(--color-card-bg);
+    border: 3px solid #C4C4C4;
+    border-radius: 8px;
     margin: 1rem;
     padding: 1rem;
     display: flex;
@@ -30,70 +50,89 @@ li {
     align-items: center;
     color: blue;
     font-weight: bold;
+    line-height: 1.5;
 }
 
-.spacing {
-    padding: 1rem;
-    margin-bottom: 0;
+li:hover {
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.wrapper {
+    max-inline-size: 75rem;
+    margin-inline: auto;
+}
+
+#todoIcon {
+    color: var(--color-primary);
+    background-color: var(--color-card-bg);
 }
 
 .counter {
     text-align: center;
+    font-weight: bold;
+    padding-top: 1rem;
+    font-size: 0.95rem;
+    color: var(--color-text-dark)
 }
 
 .completed-count {
-    color: #48BB78;
+    color: var(--color-success);
+    font-weight: 700;
 }
 
 .incomplete-count {
-    color: #F56565;
+    color: var(--color-delete);
+    font-weight: 700;
 }
 
 .btn-grp {
     display: flex;
     gap: .50rem;
-    padding: .20rem;
+    padding: .2rem;
 }
 
 .btn-grp, .task-text {
-    background-color: #CFD4D9;
+    background-color: inherit;
 }
 
 .delete-btn, .complete-btn, .edit-btn {
-    border-radius: 10px;
-    padding: .30rem;
+    border-radius: 6px;
+    padding: .35rem 0.6rem;
     margin: .10rem;
     cursor: pointer;
-    font-weight: bold;
+    font-weight: 600;
+    border: none;
+    color: var(--color-card-bg);
 }
 
 .delete-btn {
-    background-color: #FF8A9D;
+    background-color: var(--color-delete);
 }
 
 .delete-btn:hover {
-    background-color: #FF2E51;
+    background-color: #9B2C2C;
 }
 
 .complete-btn {
-    background-color: #8AFF8A;
+    background-color: var(--color-success);
 }
 
 .complete-btn:hover {
-    background-color: #00D100;
+    background-color: #276749;
 }
 
 .edit-btn {
-    background-color: #92C1D0;
+    background-color: var(--color-primary);
 }
 
 .edit-btn:hover {
-    background-color: #8A8AFF;
+    background-color: #3182CE;
 }
 
 .completed {
     text-decoration: line-through;
-    color: red;
+    color: #718096;
+    font-style: italic;
 }
 
 #addTaskBtn {
@@ -106,17 +145,12 @@ li {
 }
 
 #addTaskBtn:hover {
-    background-color: navy;
+    background-color: #3182CE;
     color: white;
 }
 
 #addTaskBtn:active {
-    color: beige;
-}
-
-.container {
-    max-inline-size: 85rem;
-    margin: 0 auto;
+    transform: scale(0.98);
 }
 
 .addTaskContainer {
@@ -133,11 +167,53 @@ li {
 }
 
 #myDialog {
-    padding: 1rem;
+    border: 1px solid var(--color-delete);
+    border-radius: 8px;
+    padding: 1.5rem;
     text-align: center;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+#myDialog button {
+    background-color: var(--color-delete);
+    color: var(--color-text-dark);
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-top: 1rem;
 }
 
 #openDialogBtn {
     display: none;
 }
 
+
+/* Responsive mobile styles */
+@media (max-width: 768px) {
+    .wrapper {
+        margin: 0.5rem;
+        padding: 0.75rem;
+    }
+
+    .addTaskContainer {
+        padding: 0 0.5rem;
+    }
+
+    li {
+        flex-direction: column;
+        padding: 0.75rem;
+    }
+
+    .task-text {
+        width: 100%;
+        margin-bottom: 0.5rem;
+    }
+
+    .btn-grp {
+        width: 100%;
+        justify-content: center;
+        padding: 0;
+        margin-left: 0;
+    }
+}
