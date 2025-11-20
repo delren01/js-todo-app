@@ -108,8 +108,8 @@ function editTask(e) {
             // c. Final swap: Replace <input> with the new <span>
             newTextInput.replaceWith(newSpanEl);
         }
+        updateCounter();
     });
-    updateCounter();
 };
 
 function updateCounter() {
