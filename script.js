@@ -7,6 +7,8 @@ const dialog = document.getElementById("myDialog");
 let completedCounter = document.querySelector(".completed-count");
 let incompleteCounter = document.querySelector(".incomplete-count");
 
+let taskListData = JSON.parse(localStorage.getItem("data")) || [];
+
 // Modal Controls
 closeDialog.addEventListener("click", () => {
     dialog.close();
@@ -19,14 +21,14 @@ dialog.addEventListener("click", (e) => {
     }
 });
 
-function addTask() {
-    // * Stores the value of the <input>
-    let inputValue = taskInput.value;
-    if (inputValue.trim() === "") { // checks whether the input value is empty and shows a modal
-        dialog.showModal();
-    } else {
+function updateTaskContainer() {
+    ulEl.innerHTML = "";
+    taskListData.forEach((task) => {
+        // * Stores the value of the <input>
+        let inputValue = task.text;
         // * Creates the main container <li> when addBtn is clicked.
         const newLi = document.createElement("li");
+        newLi.id = task.id;
         // * Groups the buttons (Edit, Complete, Delete) together 
         let buttonGroup = document.createElement("div");
         buttonGroup.classList.add("btn-grp");
@@ -46,7 +48,8 @@ function addTask() {
         let editButton = document.createElement("button");
         editButton.classList.add("edit-btn");
         editButton.textContent = "Edit";
-        // * Append the newly created <li> into the <ul> element.
+
+         // * Append the newly created <li> into the <ul> element.
         ulEl.append(newLi);
         // * <span> and <div> goes inside the <li>
         newLi.appendChild(spanContainer);
@@ -55,18 +58,43 @@ function addTask() {
         buttonGroup.append(editButton);
         buttonGroup.appendChild(completeButton);
         buttonGroup.append(deleteButton); // Appends the delete button INSIDE the task item (next to it)
+
+        if (task.completed) {
+            spanContainer.classList.add("completed");
+        }
+    
+    });
+    updateCounter();
+};
+
+function addTask() {
+    const inputValue = taskInput.value;
+    if (inputValue.trim() === "") { // checks whether the input value is empty and shows a modal
+            dialog.showModal();
+    } else {
+        const listOfTasksObj = {
+            id: Date.now(),
+            text: inputValue,
+            completed: false,
+        };
+        taskListData.push(listOfTasksObj);
+        localStorage.setItem("data", JSON.stringify(taskListData));
+        updateTaskContainer();
         // * Clears the input after adding the task.
         taskInput.value = '';
-        updateCounter();
-    }
+    };
+
 };
 
 function deleteTask(e) {
         let parentEl = e.target.parentElement;
         // From <div class="btn-grp">, it goes up to the <li> where our task text is.
         let taskToDelete = parentEl.parentElement;
-        taskToDelete.remove();
-        updateCounter();
+
+        const taskId = Number(taskToDelete.id);
+        taskListData = taskListData.filter(task => task.id !== taskId);
+        localStorage.setItem("data", JSON.stringify(taskListData));
+        updateTaskContainer();
 };
 
 function completeTask(e) {
@@ -74,41 +102,40 @@ function completeTask(e) {
         let parentEl = e.target.parentElement;
         // Locates the target <span> el containing the text we need
         let taskToStrike = parentEl.parentElement;
+        const taskId = Number(taskToStrike.id);
+        const taskIndex = taskListData.findIndex(task => task.id === taskId);
+        taskListData[taskIndex].completed = !taskListData[taskIndex].completed;
         let textEl = taskToStrike.querySelector(".task-text");
         // * Toggle the .completed class for strikethrough/red color change
-        textEl.classList.toggle("completed");
-        updateCounter();
+        localStorage.setItem("data", JSON.stringify(taskListData));
+        updateTaskContainer();
 };
 
 function editTask(e) {
     let parentEl = e.target.parentElement;
     let taskToEdit = parentEl.parentElement;
+
+    const taskId = Number(taskToEdit.id);
+    const taskIndex = taskListData.findIndex(task => task.id === taskId);
+
     // 1. Prepare a new input element
     let newTextInput = document.createElement("input");
     newTextInput.setAttribute("type", "text");
     // 2. Retrieve old <span> and store its completion status
-    let taskEl =  taskToEdit.querySelectorAll('.task-text');
-    newTextInput.value = taskEl[0].textContent; // * Assign current text to the new input value
-    let hasCompleted = taskEl[0].classList.contains("completed");  // false: Store status before swap
+    let taskEl =  taskToEdit.querySelector('.task-text');
+    newTextInput.value = taskEl.textContent; // * Assign current text to the new input value
+    // let hasCompleted = taskEl.classList.contains("completed");  // false: Store status before swap
     // 3. Perform the swap: Replace <span> with the new <input> element
-    taskEl[0].replaceWith(newTextInput);
+    taskEl.replaceWith(newTextInput);
     newTextInput.focus();
-    
+
     // 4. Implement saving logic (on keyup event for the new input)
     newTextInput.addEventListener("keyup", (event) => {
         if (event.key === "Enter") {
-            // a. Create the replacement <span>
-            let newSpanEl = document.createElement("span");
-            newSpanEl.classList.add("task-text") // Re-add mandatory class
-            newSpanEl.textContent = newTextInput.value;
-            // b. Preserve the 'completed' status using the stored boolean
-            if (hasCompleted) {
-                newSpanEl.classList.add("completed");
-            }
-            // c. Final swap: Replace <input> with the new <span>
-            newTextInput.replaceWith(newSpanEl);
+            taskListData[taskIndex].text = newTextInput.value;
+            localStorage.setItem("data", JSON.stringify(taskListData));
+            updateTaskContainer();
         }
-        updateCounter();
     });
 };
 
@@ -140,4 +167,5 @@ ulEl.addEventListener("click", (e) => {
 });
 
 addBtn.addEventListener("click", addTask);
+updateTaskContainer();
 
